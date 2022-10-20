@@ -1,0 +1,184 @@
+---
+title: "Ásia, Dados Comerciais"
+author: "Núcleo de Inteligência - SCAEC"
+date: "Últimos dados disponíveis: `r barao2::meses(barao2::comerciobr_get_ultimomes())` de `2022`"
+output:
+  pdf_document:
+    latex_engine: lualatex
+    toc: true
+    toc_depth: 2
+    number_sections: true
+organization: 
+toc-title: "Índice"
+header-includes:
+- \usepackage{fancyhdr}
+- \usepackage{lscape}
+- \usepackage{fancyhdr}
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{graphicx}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+- \usepackage[normalem]{ulem}
+- \usepackage{xcolor}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \pagestyle{fancy}
+- \fancyhead{}
+- \fancyhead[CO,CE]{Ásia, Dados Comerciais}
+- \fancyfoot[CO,CE]{}
+- \fancyfoot[LE,RO]{\thepage}
+tables: yes
+graphics: yes
+---
+
+- Exceto disposição em contrário, todos os dados estão em USD Bilhões
+
+```{r setup, include = F}
+library(Asia)
+library(kableExtra)
+periodo <- "anual"
+
+bloco_asia <- c("Arábia Saudita", "Afeganistão", "Azerbaijão", "Armênia", "Bangladesh", "Barein" ,"Brunei", "Butão", "Cazaquistão", "Camboja", "China", "Chipre",
+                 "Singapura", "Coreia do Norte", "Coreia do Sul", "Emirados Árabes Unidos", "Filipinas", "Geórgia", "Iêmen", "Índia", "Indonésia",
+                 "Irã", "Iraque", "Israel", "Japão", "Jordânia", "Coveite (Kuweit)", "Laos", "Líbano", "Maldivas", "Malásia", "Mongólia", "Mianmar", "Nepal", "Omã",
+                 "Palestina", "Paquistão", "Catar", "Quirguistão", "Rússia", "Síria", "Sri Lanka", "Tadjiquistão", "Tailândia", "Taiwan (Formosa)", "Timor Leste",
+                 "Turcomenistão", "Turquia", "Uzbequistão", "Vietnã")
+
+bloco_mundo <- c("Afeganistão", "Albânia" , "Alemanha","Burkina Faso" , "Andorra"  ,"Angola" , "Anguilla", "Antígua e Barbuda" , "Antilhas Holandesas","Arábia Saudita" , "Argélia"  , "Argentina" , "Armênia" , "Aruba" , "Austrália" , "Áustria" , "Azerbaijão" ,  "Bahamas" , "Barein",
+"Bangladesh" , "Barbados", "Belarus" , "Bélgica", "Belize" , "Bermudas", "Mianmar" , "Bolívia" ,"Bósnia-Herzegovina" ,"Botsuana"  ,            "Brunei" , "Bulgária" , "Cabo Verde" , "Cayman, Ilhas", "Camboja" , "Camarões"  , "Canadá" , "Canárias, Ilhas", "Cazaquistão" ,
+"Catar" , "Chile" , "China","Taiwan (Formosa)" , "Chipre", "Colômbia" , "Comores", "Congo" , "Coreia do Norte", "Coreia do Sul" ,
+"Costa do Marfim" , "Croácia" , "Costa Rica" ,"Coveite (Kuweit)" , "Cuba","Benin" , "Dinamarca","Dominica" , "Equador" ,"Egito" ,
+"Emirados Árabes Unidos", "Espanha" , "Eslovênia" , "Eslováquia" , "Estados Unidos" , "Estônia" , "Etiópia"  , "Filipinas" ,
+"Finlândia", "França" , "Gabão" , "Gâmbia" ,"Gana","Geórgia" , "Gibraltar", "Granada" , "Grécia" ,"Groenlândia" , "Guadalupe" ,
+"Guatemala" , "Guiana Francesa" , "Guiné" , "Guiné Equatorial" ,"Guiné-Bissau" , "Guiana","Haiti" , "Honduras"  , "Hong Kong" ,
+"Hungria"  , "Iêmen" , "Índia", "Indonésia" , "Iraque" , "Irã" , "Irlanda", "Islândia" , "Israel", "Itália" , "Jamaica"  ,
+"Japão" , "Jordânia", "Letônia" , "Líbano", "Libéria" , "Líbia" , "Liechtenstein" , "Lituânia","Luxemburgo" , "Macau",
+"Macedônia" , "Malásia" , "Malavi" , "Maldivas" , "Mali" , "Malta" , "Marrocos" ,"Marshall, Ilhas", "Martinica" , "Maurício" ,
+"Mauritânia" , "México" , "Moldávia" , "Mônaco", "Mongólia" , "Montenegro", "Moçambique" , "Namíbia", "Nepal" , "Nicarágua", "Níger" ,
+"Nigéria", "Norfolk, Ilha" , "Noruega", "Nova Caledônia" , "Papua Nova Guiné", "Nova Zelândia" , "Omã", "Países Baixos (Holanda)" ,
+"Paquistão","Panamá" , "Paraguai", "Peru" , "Polinésia Francesa", "Polônia" , "Portugal","Porto Rico" , "Quênia" , "Quirguistão" ,
+"Reino Unido","República Centro-Africana" , "República Dominicana","Reunião" , "Zimbábue","Romênia" , "Ruanda" , "Rússia" ,
+"El Salvador", "São Cristóvão e Névis" , "São Vicente e Granadinas" , "Santa Lúcia" , "São Tomé e Príncipe","Senegal" , "Seicheles",
+"Serra Leoa" , "Sérvia","Singapura" , "Síria" , "Somália" , "Sri Lanka" ,"Suazilândia" , "África do Sul", "Sudão" , "Suécia" ,"Suíça" ,
+"Suriname" , "Tadjiquistão" , "Tailândia" ,"Tanzânia" , "Djibuti" , "Chade" , "Tcheca, República","Timor Leste" , "Togo" , "Trinidad e Tobago" ,"Tunísia" , "Turcas e Caicos, Ilhas" , "Turquia" ,         "Ucrânia" , "Uganda"  , "Uruguai" , "Uzbequistão" ,"Venezuela" , "Vietnã",   
+"Virgens, Ilhas (Britânicas)" , "Virgens, Ilhas (Americanas)", "Fiji" , "Congo, República Democrática","Zâmbia" , "Burundi", "Cook, Ilhas" ,
+"Eritreia", "Ilha de Man" , "Kiribati"  , "Laos" , "Vanuatu","Pacífico, Ilhas do (EUA)" , "Samoa", "Tuvalu" , "Canal, Ilhas do (Guernsey)",
+"San Marino" , "Turcomenistão", "Faroe, Ilhas" , "Johnston, Ilhas", "Montserrat" , "Tonga","Falkland (Malvinas)" , "Palau" , "Pitcairn" ,
+"Salomão, Ilhas" , "Wallis e Futuna, Ilhas" , "Micronésia","Christmas (Navidad), Ilha" , "Palestina", "Samoa Americana" , "Lesoto","Vaticano" ,
+"Butão" , "Sudão do Sul" , "Santa Helena","Curaçao" , "Bonaire, Saint Eustatius e Saba","Aland, Ilhas" , "Toquelau" , "Nauru" ,
+"Jersey","São Martinho, Ilha de (parte francesa)" , "Saara Ocidental")
+
+
+
+knitr::opts_chunk$set(echo = F, message = F, warning = F, error = T)
+```
+
+\newpage
+
+# Fluxo de Comércio
+
+## Fluxo de Comércio Brasil - Ásia
+
+
+```{r, fig.height=5}
+Asia::comercioasia_grafico_corrente(bloco_asia, periodo)
+```
+
+```{r, results='asis'}
+purrr::walk(comercioasia_tabela_corrente(bloco_asia, periodo), print)
+```
+
+
+\newpage
+
+## Fluxo de Comércio Brasil - Mundo
+
+
+```{r, fig.height=5}
+Asia::comercioasia_grafico_corrente(bloco_mundo, periodo)
+```
+
+```{r, results='asis'}
+purrr::walk(comercioasia_tabela_corrente(bloco_mundo, periodo), print)
+```
+
+\newpage
+
+## Market Share da Ásia no Comércio brasileiro
+
+```{r, fig.height=5}
+Asia::comercioasia_grafico_divisao(periodo)
+```
+
+```{r, results='asis'}
+purrr::walk(comercioasia_tabela_divisao(periodo), print)
+```
+
+\newpage
+
+## Exportações Totais 
+
+
+```{r, fig.height=5}
+Asia::comercioasia_grafico_valor("World", "Brazil")
+```
+
+```{r, results = "asis"}
+purrr::walk(Asia::comercioasia_tabela_valores("World", "Brazil"), print)
+```
+
+```{r, fig.height=5}
+
+
+df.final_novo <- read.csv("df.final_novo.csv")
+
+df.final_novo %>%
+    ggplot2::ggplot() +
+    ggplot2::geom_line(ggplot2::aes(Year, Value, color = .data$Transação),
+                      show.legend = T)+
+    ggplot2::scale_y_continuous(labels = scales::label_percent())+
+    ggplot2::scale_x_continuous(breaks = seq(2012, 2021))+
+    ggplot2::labs(title = glue::glue("Variação das Exportações Totais"),
+                  x = NULL, y = NULL, caption = "Fonte: OMC") +
+    ggthemes::scale_fill_tableau() +
+    ggplot2::theme_minimal()
+
+
+
+```
+
+
+
+\newpage
+# Produtos comercializados da Ásia
+
+```{r, fig.height=4}
+Asia::comercioasia_grafico_produtos(bloco_asia, periodo)
+```
+
+```{r, fig.height=4}
+Asia::comercioasia_grafico_produtos_proporcao(bloco_asia, periodo)
+```
+
+\blandscape
+
+```{r, fig.height=7, fig.width=10}
+Asia::comercioasia_grafico_produtos_ranking(bloco_asia, periodo)
+```
+
+\elandscape
+
+\newpage
+
+```{r, fig.show="hold", results = "asis"}
+Asia::comercioasia_tabela_produtos(bloco_asia, periodo)
+```
+
+\newpage

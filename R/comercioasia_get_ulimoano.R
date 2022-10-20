@@ -1,0 +1,13 @@
+#' Último ano da base de dados
+#'
+#' @return o último ano disponível na base de dados "comerciobr"
+#'
+#' @export
+comercioasia_get_ulimoano <- function() {
+
+  comerciobr2::sh1_df %>%
+    dplyr::filter(co_ano == max(co_ano)) %>%
+    dplyr::distinct(co_ano) %>%
+    dplyr::pull(co_ano)
+
+}
